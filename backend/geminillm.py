@@ -2,15 +2,13 @@
 
 # To run this code you need to install the following dependencies:
 # pip install google-genai
-
-import base64
 import os
 from google import genai
 from google.genai import types
-import PIL.Image
+from PIL import Image
 
-image = PIL.Image.open("C:/Users/phone/Downloads/ugly.jpg")
-
+image_path = "C:/Users/phone/Downloads/ugly.jpg"
+image = Image.open(image_path)
 
 def generate():
     client = genai.Client(
@@ -22,16 +20,22 @@ def generate():
         types.Content(
             role="user",
             parts=[
+                # Text part
                 types.Part.from_text(text="""INSERT_INPUT_HERE"""),
+
+                # Image part
+                types.Part.from_image(image=image)
             ],
         ),
     ]
+
     generate_content_config = types.GenerateContentConfig(
-        thinking_config = types.ThinkingConfig(
+        thinking_config=types.ThinkingConfig(
             thinking_budget=-1,
         ),
     )
 
+    # Stream the response
     for chunk in client.models.generate_content_stream(
         model=model,
         contents=contents,
@@ -41,3 +45,4 @@ def generate():
 
 if __name__ == "__main__":
     generate()
+
