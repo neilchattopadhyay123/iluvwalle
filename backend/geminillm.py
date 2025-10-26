@@ -6,43 +6,32 @@ import os
 from google import genai
 from google.genai import types
 from PIL import Image
+from dotenv import load_dotenv
 
-image_path = "C:/Users/phone/Downloads/ugly.jpg"
-image = Image.open(image_path)
 
-def generate():
-    client = genai.Client(
-        api_key=os.environ.get("GEMINI_API_KEY"),
-    )
+# Load image
+#image_path = "C:/Users/phone/Downloads/metal_can.jpg"
+#image = Image.open(image_path)
+#buffered = io.BytesIO()
+#image.save(buffered, format="PNG")
+#img_b64 = base64.b64encode(buffered.getvalue()).decode("utf-8")
 
-    model = "gemini-2.5-pro"
-    contents = [
-        types.Content(
-            role="user",
-            parts=[
-                # Text part
-                types.Part.from_text(text="""INSERT_INPUT_HERE"""),
+# Load .env file
+load_dotenv()
 
-                # Image part
-                types.Part.from_image(image=image)
-            ],
-        ),
-    ]
+# Access the API key
+api_key = os.environ.get("GEMINI_API_KEY")
 
-    generate_content_config = types.GenerateContentConfig(
-        thinking_config=types.ThinkingConfig(
-            thinking_budget=-1,
-        ),
-    )
+# Create client
+client = genai.Client(api_key=api_key)
 
-    # Stream the response
-    for chunk in client.models.generate_content_stream(
-        model=model,
-        contents=contents,
-        config=generate_content_config,
-    ):
-        print(chunk.text, end="")
+# Upload image file
+my_file = client.files.upload(file="C:/Users/phone/Downloads/watterbottle1.png")
 
-if __name__ == "__main__":
-    generate()
+response = client.models.generate_content(
+    model = "gemini-2.5-pro",
+    contents=[my_file, "is the item in the photo a recyclable item or not? The only response can be either 'recyclable' or 'not recyclable'." ],
+)
+
+print(response.text)
 
