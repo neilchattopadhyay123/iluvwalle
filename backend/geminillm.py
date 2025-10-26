@@ -34,7 +34,7 @@ latest_label = None
 # with open("images/metal_can.jpg", "rb") as file:
 #     latest_image = file.read()
 #     latest_label = "Metal"
-# image_event = asyncio.Event()  # event to signal new image
+image_event = asyncio.Event()  # event to signal new image
 # image_event.set()
 
 '''
@@ -62,7 +62,7 @@ async def upload_image(file: UploadFile = File(...)):
     Endpoint for Raspberry Pi to upload an image.
     Processes image with Gemini and updates shared state.
     """
-    global latest_image, latest_label
+    global latest_image, latest_label, image_event
 
     image_bytes = await file.read()
 
