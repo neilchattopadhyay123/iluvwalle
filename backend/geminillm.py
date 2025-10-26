@@ -7,6 +7,7 @@ import asyncio
 import base64
 from fastapi import FastAPI, UploadFile, File
 from fastapi.responses import JSONResponse
+from fastapi.testclient import TestClient
 from google import genai
 from google.genai import types
 from dotenv import load_dotenv
@@ -54,10 +55,13 @@ async def upload_image(file: UploadFile = File(...)):
 
     # Send to Gemini
     response = client.models.generate_content(
-        model="gemini-2.5-flash",
+        model='gemini-2.5-flash',
         contents=[
-            types.Part.from_bytes(data=image_bytes, mime_type=file.content_type),
-            "Tell us if this is recyclable or not. Respond with only 'recyclable' or 'not recyclable'."
+        types.Part.from_bytes(
+            data=image_bytes,
+            mime_type='image/jpeg',
+        ),
+        'tell us if this is recyclable or not? respond with only recyclable or not recyclable.'
         ]
     )
 
@@ -85,3 +89,14 @@ async def get_latest_image():
         "image_base64": base64.b64encode(latest_image).decode()
     })
 
+# def test_read_main():
+#     client = TestClient(app)
+#     with open("images/bottle-water-that-is-half-empty_871349-6225.jpg", "rb") as file:
+#         files = {"file": ("image.jpg", file, "image/jpeg")}
+#         response = client.post("/gemini-response", files=files)
+
+#     print(response.json())
+#     assert response.status_code == 200
+#     assert response.json()["label"] == "recyclable"
+
+# test_read_main()
