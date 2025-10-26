@@ -109,6 +109,10 @@ async def get_latest_image():
         "image_base64": base64.b64encode(latest_image).decode()
     })
 
+@app.get("/test")
+def read_test():
+    return {"message": "✅ FastAPI GET endpoint working!"}
+
 # def test_read_main():
 #     client = TestClient(app)
 #     with open("images/metal_can.jpg", "rb") as file:
