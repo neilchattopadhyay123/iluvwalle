@@ -7,7 +7,7 @@ import time
 # Ensure script runs from its own directory
 os.chdir(os.path.dirname(os.path.abspath(__file__)))
 
-url = "http://iluvwalle/api/gemini-response"
+url = "http://iluvwalle.tech/api/gemini-response"
 save_dir = "/home/pi/CamPics/"
 os.makedirs(save_dir, exist_ok=True)
 
