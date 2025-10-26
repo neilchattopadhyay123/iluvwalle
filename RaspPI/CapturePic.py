@@ -4,9 +4,15 @@ import requests
 import os
 import time
 
+# Ensure script runs from its own directory
+os.chdir(os.path.dirname(os.path.abspath(__file__)))
+
 url = "http://10.32.121.148:8000/gemini-response"
 save_dir = "/home/pi/CamPics/"
 os.makedirs(save_dir, exist_ok=True)
+
+# Ensure OpenCV can open GUI
+os.environ["DISPLAY"] = ":0"
 
 # "/home/pi/CamPics/" 
 # "/Users/imadshaikh/Desktop/TempPics/"
