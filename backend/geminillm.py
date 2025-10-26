@@ -7,6 +7,8 @@ import asyncio
 import base64
 from fastapi import FastAPI, UploadFile, File
 from fastapi.responses import JSONResponse
+from fastapi.testclient import TestClient
+from fastapi.middleware.cors import CORSMiddleware
 from google import genai
 from google.genai import types
 from dotenv import load_dotenv
@@ -18,10 +20,22 @@ api_key = os.environ.get("GEMINI_API_KEY")
 app=FastAPI()
 client = genai.Client(api_key=api_key)
 
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins = ["*"],        # or ["*"] to allow all (not for production)
+    allow_credentials=True,
+    allow_methods=["*"],          # allow GET, POST, etc.
+    allow_headers=["*"],          # allow all headers (like Content-Type)
+)
+
 # Shared state
 latest_image = None
 latest_label = None
-image_event = asyncio.Event()  # event to signal new image
+# with open("images/metal_can.jpg", "rb") as file:
+#     latest_image = file.read()
+#     latest_label = "Metal"
+# image_event = asyncio.Event()  # event to signal new image
+# image_event.set()
 
 '''
 @app.get("/gemini-response/{photo_path}")
@@ -54,10 +68,20 @@ async def upload_image(file: UploadFile = File(...)):
 
     # Send to Gemini
     response = client.models.generate_content(
-        model="gemini-2.5-flash",
+        model='gemini-2.5-flash',
         contents=[
-            types.Part.from_bytes(data=image_bytes, mime_type=file.content_type),
-            "Tell us if this is recyclable or not. Respond with only 'recyclable' or 'not recyclable'."
+        types.Part.from_bytes(
+            data=image_bytes,
+            mime_type='image/jpeg',
+        ),
+        '''
+            Tell us if this is recyclable or not? 
+            If it is recylable paper, respond only the word: Paper. 
+            If it is recyclable glass, respond only the word: Glass. 
+            If it is recylable plastic, respond only the word: Plastic. 
+            If it is recyclable metal, respond only the word: Metal.
+            If it is none of these, respond only the phrase: Not Recyclable.
+        '''
         ]
     )
 
@@ -85,3 +109,14 @@ async def get_latest_image():
         "image_base64": base64.b64encode(latest_image).decode()
     })
 
+# def test_read_main():
+#     client = TestClient(app)
+#     with open("images/metal_can.jpg", "rb") as file:
+#         files = {"file": ("image.jpg", file, "image/jpeg")}
+#         response = client.post("/gemini-response", files=files)
+
+#     print(response.json())
+#     assert response.status_code == 200
+#     assert response.json()["label"] == "Metal"
+
+# test_read_main()
