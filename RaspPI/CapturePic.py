@@ -4,7 +4,7 @@ from datetime import datetime
 cap = cv2.VideoCapture(0)
 save_dir = "/home/pi/CamPics"
 
-# "/home/pi/CamPics"
+# "/home/pi/CamPics" 1
 # "/Users/imadshaikh/Desktop/TempPics/"
 
 ret, frame = cap.read()
