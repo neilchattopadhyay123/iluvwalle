@@ -4,7 +4,7 @@ import requests
 import os
 import time
 
-url = "http://104.32.121.148:8000/gemini-response"
+url = "http://10.32.121.148:8000/gemini-response"
 save_dir = "/Users/imadshaikh/Desktop/TempPics/"
 os.makedirs(save_dir, exist_ok=True)
 
