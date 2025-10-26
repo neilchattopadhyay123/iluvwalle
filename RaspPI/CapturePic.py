@@ -2,7 +2,7 @@ import cv2
 import random
 import requests
 
-url = "http://ad.psu.edu:8000/gemini-response"
+url = "http://96.30.192.123:8000/gemini-response"
 cap = cv2.VideoCapture(0)
 save_dir = "/home/pi/CamPics/"
 
