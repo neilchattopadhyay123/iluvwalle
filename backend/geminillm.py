@@ -61,7 +61,14 @@ async def upload_image(file: UploadFile = File(...)):
             data=image_bytes,
             mime_type='image/jpeg',
         ),
-        'tell us if this is recyclable or not? respond with only recyclable or not recyclable.'
+        '''
+            Tell us if this is recyclable or not? 
+            If it is recylable paper, respond only the word: Paper. 
+            If it is recyclable glass, respond only the word: Glass. 
+            If it is recylable plastic, respond only the word: Plastic. 
+            If it is recyclable metal, respond only the word: Metal.
+            If it is none of these, respond only the phrase: Not Recyclable.
+        '''
         ]
     )
 
@@ -91,12 +98,12 @@ async def get_latest_image():
 
 # def test_read_main():
 #     client = TestClient(app)
-#     with open("images/bottle-water-that-is-half-empty_871349-6225.jpg", "rb") as file:
+#     with open("images/metal_can.jpg", "rb") as file:
 #         files = {"file": ("image.jpg", file, "image/jpeg")}
 #         response = client.post("/gemini-response", files=files)
 
 #     print(response.json())
 #     assert response.status_code == 200
-#     assert response.json()["label"] == "recyclable"
+#     assert response.json()["label"] == "Metal"
 
 # test_read_main()
