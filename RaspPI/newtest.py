@@ -82,5 +82,5 @@ except KeyboardInterrupt:
 
 finally:
     GPIO.cleanup()
-    print("[CLEANUP] GPIO reset complete. Exiting safely
+    print("[CLEANUP] GPIO reset complete. Exiting safely.")
 
