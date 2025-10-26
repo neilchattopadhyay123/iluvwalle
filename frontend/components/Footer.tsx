@@ -10,7 +10,6 @@ export function Footer() {
             <Bot className="h-5 w-5 text-primary" />
             <span className="font-semibold">I Luv WALL-E</span>
           </div>
-          <p className="text-sm text-muted-foreground">Directive: Clean up Earth, one item at a time.</p>
         </div>
       </div>
     </footer>

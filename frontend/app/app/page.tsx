@@ -74,9 +74,9 @@ export default function AppPage() {
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
           <div className="max-w-4xl mx-auto">
             <div className="text-center">
-              <h1 className="text-3xl sm:text-4xl font-bold mb-4">Waste Allocation Load Lifter</h1>
+              <h1 className="text-3xl sm:text-4xl font-bold mb-4">Sensor Dashboard</h1>
               <p className="text-muted-foreground">
-                Scan any item to receive sorting instructions. Let's clean up Earth together.
+                Scan any item to receive sorting instructions.
               </p>
             </div>
           </div>
@@ -91,27 +91,13 @@ export default function AppPage() {
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <Camera className="h-5 w-5 text-primary" />
-                  Capture Item
+                  Current Item
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                {!selectedImage ? (
-                  <div className="space-y-4">
+                <div className="space-y-4">
                     <div className="border-2 border-dashed border-border rounded-lg p-12 text-center hover:border-primary/50 transition-colors">
-                      <Upload className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-                      <p className="text-sm text-muted-foreground mb-4">Upload an image or take a photo</p>
-                      <input
-                        type="file"
-                        accept="image/*"
-                        onChange={handleImageUpload}
-                        className="hidden"
-                        id="image-upload"
-                      />
-                      <label htmlFor="image-upload">
-                        <Button asChild className="cursor-pointer">
-                          <span>Choose Image</span>
-                        </Button>
-                      </label>
+                      <p className="text-md text-muted-foreground mb-4">No items to be sorted</p>
                     </div>
 
                     <div className="flex items-start gap-2 text-sm text-muted-foreground bg-muted/50 p-4 rounded-lg">
@@ -122,28 +108,6 @@ export default function AppPage() {
                       </p>
                     </div>
                   </div>
-                ) : (
-                  <div className="space-y-4">
-                    <div className="relative aspect-square rounded-lg overflow-hidden bg-muted">
-                      <img
-                        src={selectedImage || "/placeholder.svg"}
-                        alt="Uploaded item"
-                        className="w-full h-full object-cover"
-                      />
-                    </div>
-
-                    {isAnalyzing && (
-                      <div className="flex items-center justify-center gap-2 text-primary">
-                        <Recycle className="h-5 w-5 animate-spin" />
-                        <span className="font-medium">Analyzing item...</span>
-                      </div>
-                    )}
-
-                    <Button onClick={handleReset} variant="outline" className="w-full bg-transparent">
-                      Upload Different Item
-                    </Button>
-                  </div>
-                )}
               </CardContent>
             </Card>
 
@@ -159,7 +123,7 @@ export default function AppPage() {
                 {!result && !isAnalyzing && (
                   <div className="flex flex-col items-center justify-center py-12 text-center">
                     <AlertCircle className="h-12 w-12 text-muted-foreground mb-4" />
-                    <p className="text-muted-foreground">Upload an image to see recycling instructions</p>
+                    <p className="text-muted-foreground">Place item in front of sensor to see recycling instructions</p>
                   </div>
                 )}
 
@@ -224,11 +188,11 @@ export default function AppPage() {
           </div>
 
           <Card className="mt-8 bg-gradient-to-br from-primary/5 via-accent/5 to-secondary/5 border-primary/20">
-            <CardContent className="pt-6">
+            <CardContent>
               <div className="flex items-start gap-3">
                 <Info className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
                 <div className="space-y-2 text-sm text-muted-foreground">
-                  <p className="font-medium text-foreground">Directive Reminder:</p>
+                  <p className="font-medium text-foreground">Reminder:</p>
                   <ul className="space-y-1 list-disc list-inside">
                     <li>Sorting guidelines may vary by location</li>
                     <li>Always verify with your local waste management facility</li>

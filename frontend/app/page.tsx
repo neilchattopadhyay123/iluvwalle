@@ -21,7 +21,7 @@ export default function HomePage() {
           <div className="max-w-2xl space-y-6">
             <div className="space-y-2">
               <h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold text-balance leading-tight text-foreground">
-                WALL-E Recycling
+                I Luv WALL-E
               </h1>
             </div>
 
@@ -77,7 +77,7 @@ export default function HomePage() {
                 </div>
                 <div>
                   <div className="text-muted-foreground mb-1">Users</div>
-                  <div className="font-medium">50,000+ Active Sorters</div>
+                  <div className="font-medium">Neil, Brandon, Nick, Imad, HackPSU Judges</div>
                 </div>
               </div>
             </div>
