@@ -1,50 +1,70 @@
-from flask import Flask, request, jsonify
-import tempfile
 import os
 from pathlib import Path
+from fastapi import FastAPI, UploadFile, File
+from fastapi.responses import JSONResponse
+import shutil
+import uvicorn
 
-# Import the helper that talks to Gemini
-from backend.Gemini import get_gemini_response
+app = FastAPI(
+    title="Image Storage API",
+    description="API for storing images in the backend/images folder",
+    version="1.0.0"
+)
 
-app = Flask(__name__)
+# Ensure images directory exists
+IMAGES_DIR = Path(__file__).parent / "images"
+IMAGES_DIR.mkdir(exist_ok=True)
 
-@app.route("/analyze", methods=["POST"])
-def analyze():
-    """Accepts a multipart/form-data POST with optional 'prompt' and optional file 'image'.
-
-    Returns JSON: {"result": <text response from Gemini>}.
+@app.post("/upload", 
+    summary="Upload an image to store",
+    response_model=dict,
+    tags=["Storage"]
+)
+async def upload_image(
+    image: UploadFile = File(..., description="Image file to store")
+):
     """
-    # prompt can come in form-data or JSON body
-    prompt = request.form.get("prompt")
-    if not prompt:
-        json_body = request.get_json(silent=True) or {}
-        prompt = json_body.get("prompt")
+    Upload and store an image in the backend/images folder.
+    
+    - Supports common image formats (jpg, png, etc.)
+    - Returns the saved image filename
+    """
+    print(f"Received upload request for file: {image.filename}")  # Debug logging
+    if not image:
+        return JSONResponse(
+            status_code=400,
+            content={"error": "Please provide an image file."}
+        )
 
-    image = request.files.get("image")
-    tmp_path = None
+    # Generate safe filename and save path
+    filename = Path(image.filename)
+    safe_filename = ''.join(c for c in filename.stem if c.isalnum() or c in '-_') + filename.suffix
+    save_path = IMAGES_DIR / safe_filename
+
+    # Ensure unique filename
+    counter = 1
+    while save_path.exists():
+        new_filename = f"{Path(safe_filename).stem}_{counter}{filename.suffix}"
+        save_path = IMAGES_DIR / new_filename
+        counter += 1
+
     try:
-        if image:
-            # Save uploaded image to a temp file and pass the path to Gemini helper
-            suffix = Path(image.filename).suffix or ".jpg"
-            tmp = tempfile.NamedTemporaryFile(delete=False, suffix=suffix)
-            image.save(tmp.name)
-            tmp_path = tmp.name
-
-        # Require at least a prompt or an image
-        if not prompt and not tmp_path:
-            return jsonify({"error": "Please provide a 'prompt' or upload an 'image'."}), 400
-
-        # Call the Gemini helper
-        result = get_gemini_response(prompt or "", image_path=tmp_path)
-        return jsonify({"result": result})
-    finally:
-        if tmp_path and os.path.exists(tmp_path):
-            try:
-                os.remove(tmp_path)
-            except Exception:
-                pass
+        # Save the uploaded image
+        with save_path.open("wb") as buffer:
+            shutil.copyfileobj(image.file, buffer)
+        
+        return {
+            "filename": save_path.name,
+            "message": f"Image saved successfully to images/{save_path.name}"
+        }
+    except Exception as e:
+        return JSONResponse(
+            status_code=500,
+            content={"error": f"Failed to save image: {str(e)}"}
+        )
 
 
 if __name__ == "__main__":
-    # For local testing only. In production run with a proper WSGI server.
-    app.run(host="0.0.0.0", port=8000, debug=True)
+    # For local testing only. In production use a proper ASGI server.
+    print("Starting FastAPI server...")
+    uvicorn.run(app, host="0.0.0.0", port=8000, log_level="debug")

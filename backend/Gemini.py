@@ -5,14 +5,20 @@ import google.generativeai as genai
 from dotenv import load_dotenv, dotenv_values
 
 # Load environment variables
-load_dotenv()
-GOOGLE_API_KEY = os.getenv("GEMINI_API_KEY")
+env_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), '.env')
+print(f"Looking for .env file at: {env_path}")
+load_dotenv(env_path)
 
-# Debug print to check if API key is loaded (showing only first few characters for security)
-print(f"API Key loaded: {GOOGLE_API_KEY[:8]}...")
+# Try both possible environment variable names
+GEMINI_API_KEY = os.getenv("GEMINI_API_KEY") or os.getenv("GEMINI_KEY")
+
+if GEMINI_API_KEY:
+    print(f"API Key loaded: {GEMINI_API_KEY[:8]}...")
+else:
+    print("Warning: Neither GEMINI_API_KEY nor GEMINI_KEY found in environment")
 
 # Configure the Gemini API
-genai.configure(api_key=GOOGLE_API_KEY)
+genai.configure(api_key=GEMINI_API_KEY)
 
 def get_gemini_response(prompt, image_path=None, max_retries=3, delay=5):
     for attempt in range(max_retries):
