@@ -1,3 +1,21 @@
+myscript.service
+[Unit]
+Description=My Python Script
+After=network.target
+
+[Service]
+ExecStart=/usr/bin/python3 /home/pi/path/to/your/script.py
+WorkingDirectory=/home/pi/path/to/your
+StandardOutput=inherit
+StandardError=inherit
+Restart=always
+User=pi
+
+[Install]
+WantedBy=multi-user.target
+
+
+camera_capture.service
 [Unit]
 Description=Camera Capture Script
 After=graphical.target
@@ -13,18 +31,4 @@ Restart=always
 
 [Install]
 WantedBy=graphical.target
-
-
-/etc/systemd/system/camera_capture.service
-
-sudo systemctl daemon-reload
-sudo systemctl enable camera_capture.service
-sudo systemctl start camera_capture.service
-
-sudo reboot
-
-# Ensure OpenCV can open GUI
-os.environ["DISPLAY"] = ":0"
-# Ensure script runs from its own directory
-os.chdir(os.path.dirname(os.path.abspath(__file__)))
 
