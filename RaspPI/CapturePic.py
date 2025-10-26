@@ -1,6 +1,8 @@
 import cv2
 import random
+import requests
 
+url = "http://mobile.psu.edu:8000/gemini-response"
 cap = cv2.VideoCapture(0)
 save_dir = "/home/pi/CamPics/"
 
@@ -13,5 +15,10 @@ if ret:
     filename = save_dir + f"capture-{random_integer}.jpg"
     cv2.imwrite(str(filename), frame)
 
+with open(filename, "rb") as f:
+    img_data = {"file": f} # raw binary file
+response = requests.post(url, files=img_data)
+
 cap.release()
-cv2.destroyAllWindows()
+cv2.destroyAllWindows() 
+
