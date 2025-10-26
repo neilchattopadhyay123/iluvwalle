@@ -8,6 +8,7 @@ import base64
 from fastapi import FastAPI, UploadFile, File
 from fastapi.responses import JSONResponse
 from fastapi.testclient import TestClient
+from fastapi.middleware.cors import CORSMiddleware
 from google import genai
 from google.genai import types
 from dotenv import load_dotenv
@@ -19,10 +20,22 @@ api_key = os.environ.get("GEMINI_API_KEY")
 app=FastAPI()
 client = genai.Client(api_key=api_key)
 
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins = ["*"],        # or ["*"] to allow all (not for production)
+    allow_credentials=True,
+    allow_methods=["*"],          # allow GET, POST, etc.
+    allow_headers=["*"],          # allow all headers (like Content-Type)
+)
+
 # Shared state
 latest_image = None
 latest_label = None
-image_event = asyncio.Event()  # event to signal new image
+# with open("images/metal_can.jpg", "rb") as file:
+#     latest_image = file.read()
+#     latest_label = "Metal"
+# image_event = asyncio.Event()  # event to signal new image
+# image_event.set()
 
 '''
 @app.get("/gemini-response/{photo_path}")
