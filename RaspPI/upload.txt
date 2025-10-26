@@ -22,3 +22,9 @@ sudo systemctl enable camera_capture.service
 sudo systemctl start camera_capture.service
 
 sudo reboot
+
+# Ensure OpenCV can open GUI
+os.environ["DISPLAY"] = ":0"
+# Ensure script runs from its own directory
+os.chdir(os.path.dirname(os.path.abspath(__file__)))
+
