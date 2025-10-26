@@ -4,9 +4,12 @@ import requests
 import os
 import time
 
-url = "http://104.39.73.209:8000/gemini-response"
+url = "http://104.32.121.148:8000/gemini-response"
 save_dir = "/Users/imadshaikh/Desktop/TempPics/"
 os.makedirs(save_dir, exist_ok=True)
+
+# "/home/pi/CamPics/" 
+# "/Users/imadshaikh/Desktop/TempPics/"
 
 cap = cv2.VideoCapture(0)
 
