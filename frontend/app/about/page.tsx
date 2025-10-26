@@ -82,8 +82,8 @@ export default function AboutPage() {
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="max-w-3xl mx-auto text-center">
             <h2 className="text-3xl sm:text-4xl font-bold mb-4">Our Team</h2>
-            <div className="space-y-6 py-6">
-              <Image src="snacks.jpg" alt="Our HackPSU team" width={720} height={540} />
+            <div className="space-y-6 py-6 flex flex-row justify-center">
+              <Image src="team.jpg" alt="Our HackPSU team" width={540} height={720} />
             </div>
           </div>
         </div>
