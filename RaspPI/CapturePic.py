@@ -3,7 +3,7 @@ from datetime import datetime
 from pathlib import Path
 
 cap = cv2.VideoCapture(0)
-save_dir = Path("/USERS/imadshaikh/Desktop/TempPics")
+save_dir = Path("/home/pi/CamPics")
 save_dir.mkdir(parents=True, exist_ok=True)
 
 ret, frame = cap.read()
