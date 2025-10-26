@@ -1,0 +1,24 @@
+[Unit]
+Description=Camera Capture Script
+After=graphical.target
+Wants=graphical.target
+
+[Service]
+Type=simple
+User=pi
+Environment=DISPLAY=:0
+ExecStart=/usr/bin/python3 /home/pi/camera_capture.py
+WorkingDirectory=/home/pi
+Restart=always
+
+[Install]
+WantedBy=graphical.target
+
+
+/etc/systemd/system/camera_capture.service
+
+sudo systemctl daemon-reload
+sudo systemctl enable camera_capture.service
+sudo systemctl start camera_capture.service
+
+sudo reboot
