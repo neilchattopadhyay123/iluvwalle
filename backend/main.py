@@ -76,11 +76,11 @@ async def upload_image(file: UploadFile = File(...)):
         ),
         '''
             Tell us if this is recyclable or not? 
-            If it is recylable paper, respond only the word: Paper. 
-            If it is recyclable glass, respond only the word: Glass. 
-            If it is recylable plastic, respond only the word: Plastic. 
-            If it is recyclable metal, respond only the word: Metal.
-            If it is none of these, respond only the phrase: Not Recyclable.
+            If it is recylable paper, respond only the word: Paper 
+            If it is recyclable glass, respond only the word: Glass 
+            If it is recylable plastic, respond only the word: Plastic 
+            If it is recyclable metal, respond only the word: Metal
+            If it is none of these, respond only the phrase: Not Recyclable
         '''
         ]
     )
