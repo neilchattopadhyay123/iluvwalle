@@ -1,67 +1,73 @@
 import RPi.GPIO as GPIO
 import time
 
-# --- GPIO Mode ---
-GPIO.setmode(GPIO.BCM)
-
-# --- Define Pins ---
+# --- CONFIGURE PINS ---
 TRIG = 23
 ECHO = 24
 
-print("[SETUP] Initializing GPIO pins...")
+# --- SETUP ---
+GPIO.setmode(GPIO.BCM)
 GPIO.setup(TRIG, GPIO.OUT)
 GPIO.setup(ECHO, GPIO.IN)
-print(f"[SETUP] TRIG pin set to GPIO {TRIG}")
-print(f"[SETUP] ECHO pin set to GPIO {ECHO}")
-print("[SETUP] Sensor ready.\n")
 
-def get_distance(timeout=0.02):
-    """
-    Returns distance in cm or None if no signal detected.
-    timeout: maximum time to wait for signal (seconds)
-    """
+print("\n[SETUP] GPIO Debugging Script Initialized")
+print(f"[INFO] TRIG pin: GPIO {TRIG}")
+print(f"[INFO] ECHO pin: GPIO {ECHO}")
+print("[INFO] Checking GPIO status...\n")
+
+# --- HELPER FUNCTIONS ---
+
+def check_pin_states():
+    print("[SCAN] Reading GPIO pin states...")
+    for pin in range(2, 28):  # Valid GPIO range for most Pi models
+        try:
+            GPIO.setup(pin, GPIO.IN)
+            state = GPIO.input(pin)
+            print(f"GPIO {pin}: {'HIGH' if state else 'LOW'}")
+        except Exception as e:
+            print(f"GPIO {pin}: [ERROR] {e}")
+    print("[SCAN] Done checking all pins.\n")
+
+def test_trig_pin():
+    print(f"[TEST] Testing TRIG pin (GPIO {TRIG})...")
     GPIO.output(TRIG, False)
-    time.sleep(0.05)
-
-    # Send a short pulse
+    time.sleep(0.5)
+    print("[ACTION] Setting TRIG HIGH for 1 second...")
     GPIO.output(TRIG, True)
-    time.sleep(0.00001)
+    time.sleep(1)
+    trig_state = GPIO.input(TRIG)
+    print(f"[RESULT] TRIG pin now reads: {'HIGH' if trig_state else 'LOW'}")
     GPIO.output(TRIG, False)
+    print("[DONE] TRIG test complete.\n")
 
-    start_time = time.time()
-    pulse_start = pulse_end = None
+def monitor_echo_pin(duration=5):
+    print(f"[MONITOR] Watching ECHO pin (GPIO {ECHO}) for {duration} seconds...")
+    start = time.time()
+    prev_state = None
+    changes = 0
 
-    # Wait for ECHO HIGH
-    while GPIO.input(ECHO) == 0:
-        pulse_start = time.time()
-        if pulse_start - start_time > timeout:
-            # No HIGH detected
-            return None
+    while time.time() - start < duration:
+        state = GPIO.input(ECHO)
+        if state != prev_state:
+            changes += 1
+            print(f"[ECHO] State changed to: {'HIGH' if state else 'LOW'}")
+            prev_state = state
+        time.sleep(0.01)
 
-    # Wait for ECHO LOW
-    while GPIO.input(ECHO) == 1:
-        pulse_end = time.time()
-        if pulse_end - pulse_start > timeout:
-            # Stayed HIGH too long (invalid)
-            return None
+    if changes == 0:
+        print("[WARNING] ECHO pin did not change — no signal detected!")
+    else:
+        print(f"[INFO] ECHO pin changed state {changes} times during monitoring.\n")
 
-    pulse_duration = pulse_end - pulse_start
-    distance = pulse_duration * 17150  # cm
-    return round(distance, 2)
-
+# --- RUN TESTS ---
 try:
-    print("[SYSTEM] Starting continuous measurement (Ctrl+C to stop)\n")
-    while True:
-        dist = get_distance()
-
-        if dist is None:
-            print("[WARNING] NO SIGNAL — Object too far or sensor disconnected.")
-        else:
-            print(f"[OUTPUT] Distance: {dist} cm")
-
-        time.sleep(0.5)
+    check_pin_states()
+    test_trig_pin()
+    monitor_echo_pin()
 
 except KeyboardInterrupt:
-    print("\n[EXIT] Measurement stopped by user. Cleaning up GPIO...")
+    print("\n[EXIT] Stopped by user.")
+
+finally:
     GPIO.cleanup()
-    print("[DONE] GPIO cleanup complete. Exiting safely.")
+    print("[CLEANUP] GPIO reset complete. Exiting safely.")
