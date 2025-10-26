@@ -3,6 +3,7 @@
 import type React from "react"
 
 import { useState } from "react"
+import { useQuery } from "@tanstack/react-query"
 import { Navigation } from "@/components/navigation"
 import { Footer } from "@/components/Footer"
 import { Button } from "@/components/ui/button"
