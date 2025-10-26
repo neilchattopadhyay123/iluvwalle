@@ -23,7 +23,7 @@ const fetcher = (...args: Parameters<typeof fetch>) =>
 
 export default function AppPage() {
   const [result, setResult] = useState<RecyclingResult | null>(null)  
-  const { data, error, isLoading } = useSWR('http://10.32.121.148:8000/latest-image', fetcher, { refreshInterval: 1000 })
+  const { data, error, isLoading } = useSWR('http://iluvwalle.tech/api/latest-image', fetcher, { refreshInterval: 1000 })
 
   useEffect(() => {
     console.log(data, error, isLoading)
